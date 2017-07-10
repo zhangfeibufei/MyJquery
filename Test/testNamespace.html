@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="../jquery.js"></script>
+    <script src="../MyJquery.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<script>
+    MyJquery.noConflict();
+    $(document).ready(function(){
+        $("p").click(function(){
+            $(this).hide();
+        });
+    });
+
+</script>
+<p>hiiden</p>
+</body>
+</html>
