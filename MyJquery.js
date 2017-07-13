@@ -7,31 +7,30 @@
     "use strict";
     var _MyJquery = window.MyJquery,_$ = window.$; //把可能存在的同名变量保存起来
 
-
-    //初始化MyJquery类
     //无new 构造
-    var MyJquery =(function() {
-        var MyJquery = function (selector) {
+    var MyJquery = function (selector) {
             return new MyJquery.fn.init(selector);
         };
-        MyJquery.fn= MyJquery.prototype;
-        MyJquery.fn.init = function (selector)
-        {
-            var elem;
-            elem = document.getElementById(selector);
-            this.elem = elem;
+
+    //原型属性和方法
+    MyJquery.fn = MyJquery.prototype = {
+            init: function (selector) {   //MyJQuery对象从这里扩展
+                var elem;
+                elem = document.getElementById(selector);
+                this.elem = elem;
+            },
+           addClass:function (value) {
+               this.elem.className = value;
+               return this;
+            },
+            removeClass:function () {
+                this.elem.className = '';
+                return this;
+            }
         };
-        return MyJquery;
-    })();
-    // MyJquery.say = "hey,boy";
 
-    //简写prototype
-    // MyJquery.fn = MyJquery.prototype;
-
-
-    //构造函数
-    // MyJquery
-
+    //使无new构造的实例具有同new一样的原型对象
+    MyJquery.fn.init.prototype = MyJquery.fn;
 
     //解决命名空间冲突，让出$使用权
     MyJquery.noConflict = function () {

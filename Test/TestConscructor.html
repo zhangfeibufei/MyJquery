@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>Test Conscructor</title>
+  <style>
+    .test{
+      background-color: #ba9d37;
+    }
+  </style>
   <script src="../MyJquery.js"></script>
 </head>
 <body>
 <p id="hello">hello world</p>
-
+<button id="wow">wow</button>
 <script>
-
-    console.log(MyJquery('hello').elem.innerHTML);
+$('hello').addClass('test');
+//console.dir(tel('hello'));
 </script>
 </body>
 </html>
