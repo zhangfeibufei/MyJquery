@@ -14,10 +14,35 @@
 
     //原型属性和方法
     MyJquery.fn = MyJquery.prototype = {
-            init: function (selector) {   //MyJQuery对象从这里扩展
+            init: function (selector) {   //MyJQuery对象从这里扩展,选择元素，id，class
                 var elem;
-                elem = document.getElementById(selector);
-                this.elem = elem;
+                //判断选择器是否为字符串
+                if(Object.prototype.toString.call(selector) == "[object String]") {
+
+                    //id选择器,正则表达式函数，去掉字符串第一个字母
+                    if((/^#/gi).test(selector)) {
+                        elem = document.getElementById(selector.substr(1));
+                        this[0] = elem;
+                        this.selector = selector;
+                        this.context = document;
+                        this.length = 1;
+                    }
+                    //class选择器
+                    else if((/^\./gi).test(selector)) {
+                        elem = document.getElementsByClassName(selector.substr(1));
+                        this[0] = elem;
+                        this.selector = selector;
+                        this.context = document;
+                        this.length = elem.length;
+                    }
+                    else{
+                        elem = document.getElementsByTagName(selector);
+                        this.selector = selector;
+                        this.context = document;
+                        this[0] = elem;
+                        this.length = elem.length;
+                    }
+                }
             },
            addClass:function (value) {
                this.elem.className = value;
