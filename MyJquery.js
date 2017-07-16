@@ -58,12 +58,54 @@
             removeClass:function () {
                 this.elem.className = '';
                 return this;
-            },
-        ready:function(fn){
-                return MyJquery.Events.ready(fn);
-        }
+            }
         };
 
+    //扩展函数
+    MyJquery.extend = function () {
+        var i = 1,
+            deep = false,
+            target = arguments[0],
+            length = arguments.length;
+        if(typeof target === "boolean" ){
+            deep = target;
+            target = arguments[1];
+            i = 2;
+            console.log("deep = " +deep + "  target = " +target );
+        }
+        if(length === i){
+            for(var key in target){
+                    MyJquery[key] = target[key];
+
+            }
+        }
+    }
+
+    //类型检测方法
+    MyJquery.extend({
+        isFunction:function (obj) {
+            return MyJquery.type(obj) === "function";
+        },
+        isArray:Array.isArray || function (obj) {
+            return MyJquery.type(obj) === "array";
+        },
+        type:function (obj) {
+            var class2type ={
+                "[object Array]":"array",
+                "[object Boolean]":"boolean",
+                "[object Date]":"date",
+                "[object Function]":"function",
+                "[object Number]":"number",
+                "[object Object]":"object",
+                "[object RegExp]":"regexp",
+                "[object String]":"string"
+            };
+            var toString = Object.prototype.toString;
+            return obj == null ?
+                String(obj):
+                class2type[toString.call(obj)] || "object";
+        }
+    })
     //使无new构造的实例具有同new一样的原型对象
     MyJquery.fn.init.prototype = MyJquery.fn;
 
@@ -73,6 +115,8 @@
             window.onload = fn;
         }
     }
+
+    MyJquery.extend(MyJquery.Events);
 
     //闭包实现回调函数
     MyJquery.Callbacks = function (flag) {
