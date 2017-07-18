@@ -5,7 +5,14 @@
 //立即执行函数
 (function(window,undefined){
     "use strict";
-    var _MyJquery = window.MyJquery,_$ = window.$; //把可能存在的同名变量保存起来
+    var _MyJquery = window.MyJquery,_$ = window.$,//把可能存在的同名变量保存起来
+        //原生方法赋值给变量，简化代码量
+        toString = Object.prototype.toString,
+        hasOwn = Object.prototype.hasOwnProperty,
+        push = Array.prototype.push,
+        slice = Array.prototype.slice,
+        trim = String.prototype.trim,
+        indexOf = Array.prototype.indexOf;
 
     //无new 构造
     var MyJquery = function (selector) {
@@ -19,11 +26,12 @@
 
                 //dom元素
                 if(selector.nodeType){
+                    this.length = 1;
                     this.context = this[0] = selector;
-                    this.elem = selector;
+                    return this;
                 } else
                 //判断选择器是否为字符串
-                if(Object.prototype.toString.call(selector) == "[object String]") {
+                if(toString.call(selector) == "[object String]") {
                     //id选择器,正则表达式函数，去掉字符串第一个字母
                     if((/^#/gi).test(selector)) {
                         elem = document.getElementById(selector.substr(1));
@@ -49,6 +57,18 @@
                         return this;
                     }
                 }
+            },
+            selector:"",
+            MyJquery:"1.0.0",
+            length:0,
+            size:function () {
+                return this.length;
+            },
+            toArray:function () {
+               return slice.call(this,0);
+            },
+            each:function (callback,args) {
+                return MyJquery.each(this,callback,args);
             },
            addClass:function (value) {
                if(!this.elem)
@@ -104,6 +124,60 @@
             return obj == null ?
                 String(obj):
                 class2type[toString.call(obj)] || "object";
+        },
+        merge:function (first,second) {
+            var i = first.length,
+                j = 0;
+
+            if(typeof second.length === "number"){
+                for( var l = second.length; j < l;j++){
+                    first[ i ++] = second[j];
+                }
+            }else{
+                while ( second[j] !== undefined){
+                    first[ i ++ ] = second[j ++];
+                }
+            }
+            first.length = i;
+            return first;
+        },
+        //遍历函数
+        each:function (object,callback,args) {
+            var name,i = 0,
+                length = object.length,
+                isObject = length === undefined || MyJquery.isFunction(object);
+
+            if(args){
+                if(isObject){
+                    for( name in object){
+                        if ( callback.apply( object[ name ],args) === false){
+                            break;
+                        }
+                    }
+                }else{
+                for(;i < length;){
+                    if( callback.apply( object[ i++ ],args ) === false){
+                        break;
+                    }
+                }
+            }
+        }else{
+                if(isObject){
+                    for( name in object){
+                        if ( callback.call( object[ name ],name,object[ name ]) === false){
+                            break;
+                        }
+                    }
+                }else{
+                    for(;i < length;){
+                        if( callback.call( object[ i ],i,object[ i++ ] ) === false){
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return object;
         }
     })
     //使无new构造的实例具有同new一样的原型对象
@@ -118,6 +192,27 @@
 
     MyJquery.extend(MyJquery.Events);
 
+    //制作数组
+    MyJquery.makeArray = function (array,results) {
+        var ret = results || [],
+        push = Array.prototype.push;
+
+        if(array != null){
+            var type = MyJquery.type(array);
+
+            if(array.length == null
+                || type === "string"
+                || type === "function"
+                || type === "regexp"
+                )
+                push.call(ret,array);
+        }else{
+            MyJquery.merge(ret,array);
+        }
+        return ret;
+    };
+
+    MyJquery.extend(MyJquery.makeArray);
     //闭包实现回调函数
     MyJquery.Callbacks = function (flag) {
         var list = [];

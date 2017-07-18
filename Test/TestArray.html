@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Conscructor</title>
+  <style>
+    .test{
+      background-color: #ba9d37;
+    }
+  </style>
+  <script src="../jquery.js"></script>
+</head>
+<body>
+<p id="hello">hello world</p>
+<button id="wow">wow</button>
+
+<button class="wow">wow</button>
+<button class="wow">wow</button>
+<button class="wow">wow</button>
+<script>
+  var arr = [{},{},{},{}];
+  //callback.call语句，立即执行回调函数
+  var each = function (arr1,callback) {
+      var length = arr1.length,i = 0;
+      for(;i < length;){
+          if(callback.call(arr1[ i ], i ,arr1[ i++ ]) === false)
+         break;
+      }
+      return arr1;
+  };
+  var arr2 = each(arr,function (i) {
+      this.hello =  "wold";
+//      return false;
+  });
+  console.log(arr2);
+
+</script>
+</body>
+</html>
